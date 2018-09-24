@@ -1,42 +1,34 @@
 package codility.lesson4.maxcounters;
 
-/**
- *
- * TODO! Only 77%
- *
- */
 class Solution {
-    private int[] counters;
-    private int currentMax;
-
     public int[] solution(int n, int[] a) {
-        counters = new int[n];
-        currentMax = 0;
+        int[] counters = new int[n];
+        int maxLocal = 0;
+        int maxApply = 0;
 
-        for (int k = 0; k < a.length; k++) {
-            int x = a[k];
-            if (x >= 1 && x <= n) {
-                increase(x);
+        for (int i = 0; i < a.length; i++) {
+            int counter = a[i] - 1;
+            if (counter < n) {
+                if (counters[counter] < maxApply) {
+                    counters[counter] = maxApply;
+                }
+                counters[counter]++;
+
+                if (maxLocal < counters[counter]) {
+                    maxLocal = counters[counter];
+                }
+            } else {
+                maxApply = maxLocal;
             }
-            else if (x == n + 1) {
-                maxCounter();
+        }
+
+        for (int j = 0; j < counters.length; j++) {
+            if (counters[j] < maxApply) {
+                counters[j] = maxApply;
             }
+
         }
 
         return counters;
-    }
-
-    private void maxCounter() {
-        for (int i = 0; i < counters.length; i++) {
-            counters[i] = currentMax;
-        }
-    }
-
-    private void increase(int x) {
-        int normalizedX = x - 1;
-        counters[normalizedX]++;
-        if (currentMax < counters[normalizedX]) {
-            currentMax = counters[normalizedX];
-        }
     }
 }
