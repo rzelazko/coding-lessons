@@ -1,53 +1,40 @@
 package codility.lesson13.fibfrog;
 
-
 /**
- *
- * TODO! Only 41%
- *
+ * Solution:
+ * - find where we can go from initial position
+ * - for each element in array a fill values of minJumps array which tells 'what is minimal jumps from beggining to  position i'
  */
 public class Solution {
     public int solution(int[] a) {
-        final int n = a.length;
-        int[] fibonacci = fibonacci();
+        int[] fibs =
+                {1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765, 10946, 17711, 28657, 46368, 75025, 121393};
 
-        int position = -1;
-        int nextJumpIdx = fibonacci.length - 1;
-        int nextJump = position + fibonacci[nextJumpIdx];
+        int[] minJumps = new int[a.length + 1];
 
-        int totalJumps = 0;
-
-        while (position < n && nextJumpIdx > 0) {
-            if (nextJump > n) {
-                nextJumpIdx--;
-                nextJump = position + fibonacci[nextJumpIdx];
-            }
-            else if (nextJump == n) {
-                return totalJumps + 1;
-            }
-            else if (a[nextJump] == 1) {
-                position = nextJump;
-                nextJumpIdx = fibonacci.length - 1;
-                nextJump = position + fibonacci[nextJumpIdx];
-                totalJumps++;
-            }
-            else {
-                nextJumpIdx--;
-                nextJump = position + fibonacci[nextJumpIdx];
+        for (int i = 0; fibs[i] - 1 <= a.length; i++) {
+            if (fibs[i] - 1 == a.length || a[fibs[i] - 1] == 1) {
+                minJumps[fibs[i] - 1] = 1;
             }
         }
 
-        return -1;
-    }
-
-    private int[] fibonacci() {
-        int[] fibonacci = new int[6];
-        fibonacci[0] = 0;
-        fibonacci[1] = 1;
-        for (int i = 2; i < fibonacci.length; i++) {
-            fibonacci[i] = fibonacci[i - 1] + fibonacci[i - 2];
+        for (int i = 0; i <= a.length; i++) {
+            if ((i == a.length || a[i] == 1) && minJumps[i] > 0) {
+                int lastMinJump = minJumps[i];
+                for (int j = 0; j < fibs.length; j++) {
+                    int next = i + fibs[j];
+                    if (next > a.length) {
+                        break;
+                    }
+                    if ((next == a.length || a[next] == 1)) {
+                        if (minJumps[next] == 0 || lastMinJump + 1 < minJumps[next]) {
+                            minJumps[next] = lastMinJump + 1;
+                        }
+                    }
+                }
+            }
         }
 
-        return fibonacci;
+        return minJumps[a.length] > 0 ? minJumps[a.length] : -1;
     }
 }
